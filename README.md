@@ -67,7 +67,7 @@ flowchart TD
 ## 🚀 Quick Start
 
 ```bash
-git clone https://github.com/<your-username>/mitre-attack-mapping-tool.git
+git clone https://github.com/ragesh18/Mitre-mapper.git
 cd mitre-attack-mapping-tool
 
 python -m venv .venv
