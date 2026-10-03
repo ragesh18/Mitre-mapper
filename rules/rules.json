@@ -1,0 +1,497 @@
+[
+ {
+  "attack_id": "T1059.001",
+  "name": "PowerShell",
+  "tactics": [
+   "Execution"
+  ],
+  "indicators": [
+   "powershell.exe",
+   "powershell",
+   "-enc",
+   "-encodedcommand",
+   "invoke-expression",
+   "iex(",
+   "downloadstring"
+  ],
+  "weight": 0.75
+ },
+ {
+  "attack_id": "T1059.003",
+  "name": "Windows Command Shell",
+  "tactics": [
+   "Execution"
+  ],
+  "indicators": [
+   "cmd.exe /c",
+   "cmd /c",
+   "cmd.exe"
+  ],
+  "weight": 0.6
+ },
+ {
+  "attack_id": "T1059.004",
+  "name": "Unix Shell",
+  "tactics": [
+   "Execution"
+  ],
+  "indicators": [
+   "/bin/bash -c",
+   "/bin/sh -c",
+   "bash -i"
+  ],
+  "weight": 0.65
+ },
+ {
+  "attack_id": "T1059.005",
+  "name": "Visual Basic",
+  "tactics": [
+   "Execution"
+  ],
+  "indicators": [
+   "wscript.exe",
+   "cscript.exe",
+   ".vbs"
+  ],
+  "weight": 0.7
+ },
+ {
+  "attack_id": "T1059.006",
+  "name": "Python",
+  "tactics": [
+   "Execution"
+  ],
+  "indicators": [
+   "python -c",
+   "python3 -c"
+  ],
+  "weight": 0.5
+ },
+ {
+  "attack_id": "T1003.001",
+  "name": "LSASS Memory",
+  "tactics": [
+   "Credential Access"
+  ],
+  "indicators": [
+   "mimikatz",
+   "sekurlsa",
+   "lsass",
+   "procdump",
+   "logonpasswords",
+   "comsvcs.dll minidump"
+  ],
+  "weight": 0.8
+ },
+ {
+  "attack_id": "T1003.002",
+  "name": "Security Account Manager",
+  "tactics": [
+   "Credential Access"
+  ],
+  "indicators": [
+   "reg save hklm/sam",
+   "hklm/sam",
+   "lsadump::sam"
+  ],
+  "weight": 0.8
+ },
+ {
+  "attack_id": "T1003.003",
+  "name": "NTDS",
+  "tactics": [
+   "Credential Access"
+  ],
+  "indicators": [
+   "ntds.dit",
+   "ntdsutil",
+   "vssadmin create shadow"
+  ],
+  "weight": 0.8
+ },
+ {
+  "attack_id": "T1110",
+  "name": "Brute Force",
+  "tactics": [
+   "Credential Access"
+  ],
+  "indicators": [
+   "brute force",
+   "failed password",
+   "hydra",
+   "too many failed logon",
+   "password spray"
+  ],
+  "weight": 0.6
+ },
+ {
+  "attack_id": "T1033",
+  "name": "System Owner/User Discovery",
+  "tactics": [
+   "Discovery"
+  ],
+  "indicators": [
+   "whoami",
+   "query user"
+  ],
+  "weight": 0.65
+ },
+ {
+  "attack_id": "T1082",
+  "name": "System Information Discovery",
+  "tactics": [
+   "Discovery"
+  ],
+  "indicators": [
+   "systeminfo",
+   "uname -a",
+   "hostname"
+  ],
+  "weight": 0.6
+ },
+ {
+  "attack_id": "T1087",
+  "name": "Account Discovery",
+  "tactics": [
+   "Discovery"
+  ],
+  "indicators": [
+   "net user",
+   "net localgroup",
+   "net group",
+   "get-localuser"
+  ],
+  "weight": 0.65
+ },
+ {
+  "attack_id": "T1016",
+  "name": "System Network Configuration Discovery",
+  "tactics": [
+   "Discovery"
+  ],
+  "indicators": [
+   "ipconfig",
+   "ifconfig",
+   "arp -a",
+   "route print"
+  ],
+  "weight": 0.6
+ },
+ {
+  "attack_id": "T1018",
+  "name": "Remote System Discovery",
+  "tactics": [
+   "Discovery"
+  ],
+  "indicators": [
+   "net view",
+   "nltest",
+   "ping sweep"
+  ],
+  "weight": 0.6
+ },
+ {
+  "attack_id": "T1046",
+  "name": "Network Service Discovery",
+  "tactics": [
+   "Discovery"
+  ],
+  "indicators": [
+   "nmap",
+   "port scan",
+   "masscan"
+  ],
+  "weight": 0.75
+ },
+ {
+  "attack_id": "T1057",
+  "name": "Process Discovery",
+  "tactics": [
+   "Discovery"
+  ],
+  "indicators": [
+   "tasklist",
+   "get-process",
+   "ps aux"
+  ],
+  "weight": 0.55
+ },
+ {
+  "attack_id": "T1053.005",
+  "name": "Scheduled Task",
+  "tactics": [
+   "Execution",
+   "Persistence",
+   "Privilege Escalation"
+  ],
+  "indicators": [
+   "schtasks",
+   "scheduled task",
+   "at.exe"
+  ],
+  "weight": 0.7
+ },
+ {
+  "attack_id": "T1547.001",
+  "name": "Registry Run Keys / Startup Folder",
+  "tactics": [
+   "Persistence",
+   "Privilege Escalation"
+  ],
+  "indicators": [
+   "currentversion/run",
+   "startup folder",
+   "hkcu/software/microsoft/windows/currentversion/run"
+  ],
+  "weight": 0.75
+ },
+ {
+  "attack_id": "T1543.003",
+  "name": "Windows Service",
+  "tactics": [
+   "Persistence",
+   "Privilege Escalation"
+  ],
+  "indicators": [
+   "sc create",
+   "sc.exe create",
+   "new-service"
+  ],
+  "weight": 0.7
+ },
+ {
+  "attack_id": "T1136",
+  "name": "Create Account",
+  "tactics": [
+   "Persistence"
+  ],
+  "indicators": [
+   "net user /add",
+   "useradd",
+   "adduser",
+   "new-localuser"
+  ],
+  "weight": 0.75
+ },
+ {
+  "attack_id": "T1105",
+  "name": "Ingress Tool Transfer",
+  "tactics": [
+   "Command and Control"
+  ],
+  "indicators": [
+   "certutil -urlcache",
+   "bitsadmin /transfer",
+   "wget http",
+   "curl http",
+   "invoke-webrequest"
+  ],
+  "weight": 0.7
+ },
+ {
+  "attack_id": "T1071.001",
+  "name": "Web Protocols",
+  "tactics": [
+   "Command and Control"
+  ],
+  "indicators": [
+   "beacon",
+   "c2 server",
+   "command and control"
+  ],
+  "weight": 0.5
+ },
+ {
+  "attack_id": "T1218.011",
+  "name": "Rundll32",
+  "tactics": [
+   "Defense Evasion"
+  ],
+  "indicators": [
+   "rundll32"
+  ],
+  "weight": 0.65
+ },
+ {
+  "attack_id": "T1218.005",
+  "name": "Mshta",
+  "tactics": [
+   "Defense Evasion"
+  ],
+  "indicators": [
+   "mshta"
+  ],
+  "weight": 0.75
+ },
+ {
+  "attack_id": "T1218.010",
+  "name": "Regsvr32",
+  "tactics": [
+   "Defense Evasion"
+  ],
+  "indicators": [
+   "regsvr32"
+  ],
+  "weight": 0.65
+ },
+ {
+  "attack_id": "T1027",
+  "name": "Obfuscated Files or Information",
+  "tactics": [
+   "Defense Evasion"
+  ],
+  "indicators": [
+   "base64",
+   "obfuscat",
+   "frombase64string"
+  ],
+  "weight": 0.55
+ },
+ {
+  "attack_id": "T1070.001",
+  "name": "Clear Windows Event Logs",
+  "tactics": [
+   "Defense Evasion"
+  ],
+  "indicators": [
+   "wevtutil cl",
+   "clear-eventlog",
+   "event log cleared"
+  ],
+  "weight": 0.85
+ },
+ {
+  "attack_id": "T1562.001",
+  "name": "Disable or Modify Tools",
+  "tactics": [
+   "Defense Evasion"
+  ],
+  "indicators": [
+   "set-mppreference -disablerealtimemonitoring",
+   "disable defender",
+   "stop-service windefend"
+  ],
+  "weight": 0.8
+ },
+ {
+  "attack_id": "T1021.001",
+  "name": "Remote Desktop Protocol",
+  "tactics": [
+   "Lateral Movement"
+  ],
+  "indicators": [
+   "rdp",
+   "mstsc",
+   "remote desktop",
+   "3389"
+  ],
+  "weight": 0.55
+ },
+ {
+  "attack_id": "T1021.002",
+  "name": "SMB/Windows Admin Shares",
+  "tactics": [
+   "Lateral Movement"
+  ],
+  "indicators": [
+   "psexec",
+   "admin$",
+   "c$"
+  ],
+  "weight": 0.7
+ },
+ {
+  "attack_id": "T1047",
+  "name": "Windows Management Instrumentation",
+  "tactics": [
+   "Execution"
+  ],
+  "indicators": [
+   "wmic",
+   "wmiprvse",
+   "get-wmiobject"
+  ],
+  "weight": 0.65
+ },
+ {
+  "attack_id": "T1486",
+  "name": "Data Encrypted for Impact",
+  "tactics": [
+   "Impact"
+  ],
+  "indicators": [
+   "ransomware",
+   "encrypted files",
+   "ransom note",
+   ".locked"
+  ],
+  "weight": 0.8
+ },
+ {
+  "attack_id": "T1490",
+  "name": "Inhibit System Recovery",
+  "tactics": [
+   "Impact"
+  ],
+  "indicators": [
+   "vssadmin delete shadows",
+   "wbadmin delete",
+   "bcdedit /set recoveryenabled no"
+  ],
+  "weight": 0.9
+ },
+ {
+  "attack_id": "T1041",
+  "name": "Exfiltration Over C2 Channel",
+  "tactics": [
+   "Exfiltration"
+  ],
+  "indicators": [
+   "exfiltrat",
+   "data exfil"
+  ],
+  "weight": 0.6
+ },
+ {
+  "attack_id": "T1566.001",
+  "name": "Spearphishing Attachment",
+  "tactics": [
+   "Initial Access"
+  ],
+  "indicators": [
+   "phishing",
+   "malicious attachment",
+   "macro-enabled"
+  ],
+  "weight": 0.55
+ },
+ {
+  "attack_id": "T1190",
+  "name": "Exploit Public-Facing Application",
+  "tactics": [
+   "Initial Access"
+  ],
+  "indicators": [
+   "sql injection",
+   "union select",
+   "../../",
+   "log4j",
+   "jndi:ldap"
+  ],
+  "weight": 0.7
+ },
+ {
+  "attack_id": "T1548.002",
+  "name": "Bypass User Account Control",
+  "tactics": [
+   "Privilege Escalation",
+   "Defense Evasion"
+  ],
+  "indicators": [
+   "eventvwr.exe",
+   "fodhelper",
+   "uac bypass"
+  ],
+  "weight": 0.75
+ }
+]

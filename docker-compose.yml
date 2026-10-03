@@ -1,0 +1,8 @@
+services:
+  mitre-mapper:
+    build: .
+    ports: ["8000:8000"]
+    environment:
+      - ADMIN_TOKEN=change-me
+      - SYNC_INTERVAL_HOURS=24
+    volumes: ["./data:/app/data"]

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MITRE ATT&amp;CK Mapping Tool</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--fg:#1b1f24;--mut:#000207;--bd:#e3e6ea;--ac:#c0392b}
+@media(prefers-color-scheme:dark){:root{--bg:#121213;--card:#171c23;--fg:#e8ebef;--mut:#ffffff;--bd:#050d18;--ac:#ffffff}}
+*{box-sizing:border-box}body{margin:0;font:15px/1.5 system-ui,sans-serif;background:var(--bg);color:var(--fg)}
+main{max-width:900px;margin:0 auto;padding:24px 16px}h1{font-size:22px;margin:0 0 4px}.sub{color:var(--mut);margin:0 0 20px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:16px;margin-bottom:14px}
+textarea{width:100%;min-height:130px;font:13px ui-monospace,monospace;background:var(--bg);color:var(--fg);border:1px solid var(--bd);border-radius:8px;padding:10px}
+button{background:var(--ac);color:#000000;border:0;border-radius:8px;padding:9px 16px;font-weight:600;cursor:pointer}button.sec{background:transparent;color:var(--fg);border:1px solid var(--bd)}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}.bar{height:6px;background:var(--bd);border-radius:3px;overflow:hidden;width:120px}.bar i{display:block;height:100%;background:var(--ac)}
+.tag{display:inline-block;font-size:12px;border:1px solid var(--bd);border-radius:20px;padding:1px 9px;margin:2px 4px 2px 0;color:var(--mut)}
+.id{font:700 15px ui-monospace,monospace;color:var(--ac)}.mut{color:var(--mut);font-size:13px}a{color:var(--ac)}.err{color:var(--ac)}
+</style>
+</head>
+<body>
+<main>
+<h1>MITRE ATT&amp;CK Mapping Tool</h1>
+<p class="sub">Paste a log line, command, or threat description. Confidence is this tool's heuristic score, not a MITRE value.</p>
+<div class="card">
+  <textarea id="text" placeholder='mimikatz.exe "sekurlsa::logonpasswords"'></textarea>
+  <div class="row">
+    <button id="go">Analyze</button>
+    <input type="file" id="file" accept=".txt,.log,.csv,.json">
+    <button class="sec" id="upload">Analyze file</button>
+    <span id="status" class="mut"></span>
+  </div>
+</div>
+<div id="results"></div>
+<div class="card"><b>History</b> <button class="sec" id="refresh" style="padding:3px 10px;margin-left:8px">Refresh</button><div id="history" class="mut" style="margin-top:8px"></div></div>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const el = (tag, props = {}, ...kids) => { const e = Object.assign(document.createElement(tag), props); kids.forEach(k => e.append(k)); return e; };
+const status = (m, err) => { $("status").textContent = m; $("status").className = err ? "err" : "mut"; };
+
+async function call(url, opts) {
+  const r = await fetch(url, opts);
+  const body = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(typeof body.detail === "string" ? body.detail : "Request failed (" + r.status + ")");
+  return body;
+}
+
+function render(data) {
+  const box = $("results"); box.replaceChildren();
+  if (!data.results.length) { box.append(el("div", { className: "card mut", textContent: "No techniques matched." })); return; }
+  box.append(el("div", { className: "mut", style: "margin-bottom:8px" }, data.count + " technique(s) · export: ",
+    el("a", { href: "/api/v1/export/" + data.analysis_id + "?format=json", textContent: "JSON" }), " · ",
+    el("a", { href: "/api/v1/export/" + data.analysis_id + "?format=csv", textContent: "CSV" })));
+  data.results.forEach(r => {
+    const card = el("div", { className: "card" });
+    card.append(el("div", { className: "row", style: "margin:0;justify-content:space-between" },
+      el("span", {}, el("span", { className: "id", textContent: r.attack_id }), "  " + r.name),
+      el("span", { className: "row", style: "margin:0" }, el("span", { className: "bar" }, el("i", { style: "width:" + r.confidence + "%" })), r.confidence + "%")));
+    card.append(el("div", { className: "mut", textContent: "Tactic: " + r.tactics.join(", ") }));
+    const ind = el("div", { style: "margin-top:6px" }, "Indicators: ");
+    r.indicators.forEach(i => ind.append(el("span", { className: "tag", textContent: i })));
+    card.append(ind);
+    if (r.url && r.url.startsWith("https://attack.mitre.org/")) card.append(el("a", { href: r.url, target: "_blank", rel: "noopener", textContent: "View on MITRE ATT&CK →" }));
+    box.append(card);
+  });
+}
+
+async function run(fn) {
+  status("Analyzing…");
+  try { render(await fn()); status(""); loadHistory(); } catch (e) { status(e.message, true); }
+}
+$("go").onclick = () => run(() => call("/api/v1/map", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text: $("text").value }) }));
+$("upload").onclick = () => {
+  const f = $("file").files[0]; if (!f) return status("Choose a file first", true);
+  const fd = new FormData(); fd.append("file", f);
+  run(() => call("/api/v1/map/file", { method: "POST", body: fd }));
+};
+async function loadHistory() {
+  const h = $("history"); h.replaceChildren();
+  try {
+    const rows = await call("/api/v1/history?limit=10");
+    if (!rows.length) h.textContent = "No analyses yet.";
+    rows.forEach(a => h.append(el("div", { style: "padding:4px 0;border-top:1px solid var(--bd)" },
+      "#" + a.analysis_id + " · " + a.created_at.slice(0, 16).replace("T", " ") + " · " + a.count + " match(es) · " + a.preview.slice(0, 70))));
+  } catch (e) { h.textContent = e.message; }
+}
+$("refresh").onclick = loadHistory; loadHistory();
+</script>
+</body>
+</html>
